@@ -20,13 +20,3 @@ class GuildConfig:
     MEMBER_ROLE_ID = os.getenv("MEMBER_ROLE_ID")
     MEMBER_TEMP_ROLE_ID = os.getenv("MEMBER_TEMP_ROLE_ID")
 
-
-"""
-there are three url in total right
-One for onboarding 
-pinna verification 
-
-
-
-
-"""

@@ -1,13 +1,11 @@
 import asyncio
 
 import discord
-import requests
 from discord.ext import commands
 
-from config import ApiConfig, Config
+from config import Config
 
 bot_config = Config()
-api_config = ApiConfig()
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -15,8 +13,6 @@ intents.members = True
 
 # Set the command prefix
 bot = commands.Bot(command_prefix="!", intents=intents)
-
-api_url = api_config.URL
 
 
 @bot.event
@@ -27,17 +23,6 @@ async def on_ready():
         print(f"✅ Synced {len(synced)} slash command(s).")
     except Exception as e:
         print(f"❌ Sync failed: {e}")
-
-
-@bot.command()
-async def clear(ctx):
-    await ctx.channel.purge(limit=None)
-    await ctx.send("✅ All messages cleared.", delete_after=3)
-
-
-@bot.command()
-async def hello(ctx):
-    await ctx.send(f"Hello, {ctx.author.name}! 👋")
 
 
 @bot.command()
@@ -66,26 +51,6 @@ async def profile(ctx):
         )
 
     await ctx.send(embed=embed)
-
-
-@bot.command()
-async def weather(ctx, *, city: str):
-    try:
-        response = requests.get("http://127.0.0.1:5000/weather", params={"city": city})
-        data = response.json()
-
-        if "error" in data:
-            await ctx.send(f"❌ {data['error']}")
-        else:
-            await ctx.send(
-                f"🌤️ Weather in **{data['city']}**:\n"
-                f"🌡️ Temperature: **{data['temperature']}°C**\n"
-                f"📄 Condition: **{data['description'].capitalize()}**"
-            )
-    except Exception as e:
-        await ctx.send("⚠️ Failed to fetch weather.")
-        print("Error:", e)
-
 
 async def main():
     # ADD YOUR COGS HERE
