@@ -64,33 +64,3 @@ class Sync(commands.Cog):
 
 async def setup(bot: commands.bot):
     await bot.add_cog(Sync(bot))
-
-
-"""
-
-            if status == "active":
-                return {
-                    "status": "active",
-                    "message": "User verified successfully.",
-                }
-            elif status == "pending":
-                return {
-                    "status": "pending",
-                    "message": "User is still pending signup.",
-                }
-            elif status == "not_referred":
-                return {
-                    "status": "not_referred",
-                    "message": "User is not referred yet.",
-                }
-            else:
-                return {
-                    "status": "unknown",
-                    "message": f"Unexpected account status: '{status}'",
-                }
-
-okkkkkkk
-What
-what is change
-
-"""
