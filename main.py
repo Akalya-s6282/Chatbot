@@ -57,6 +57,7 @@ async def main():
     await bot.load_extension("cogs.verify_webhooks")
     await bot.load_extension("cogs.roles")
     await bot.load_extension("cogs.Sync")
+    await bot.load_extension("cogs.profile")
     # Start the bot
     await bot.start(bot_config.TOKEN)
 

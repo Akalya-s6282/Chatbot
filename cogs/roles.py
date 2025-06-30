@@ -1,14 +1,22 @@
 import discord
 from discord.ext import commands
 
+from config import GuildConfig
+from utils import name_assign, update_member_status
+
 
 class Roles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.guildconfig = GuildConfig()
 
     @commands.Cog.listener()
     async def on_message(self, message):
         bot = self.bot
+        temp_member_id = int(self.guildconfig.MEMBER_TEMP_ROLE_ID)
+        member_id = int(self.guildconfig.MEMBER_ROLE_ID)
+        verify_user = int(self.guildconfig.VERIFY_USER)
+
         if message.author == bot.user:
             return
         if message.content.startswith("!"):
@@ -20,7 +28,7 @@ class Roles(commands.Cog):
                 f"{message.author.name} has sent {message.content}", delete_after=5
             )
         ALLOWED_USER_IDS = [1168170948088840212, 869471461545480212]
-        if message.channel.name == "verify-user":
+        if message.channel.id == verify_user:
             if (message.webhook_id is not None) or (
                 message.author.id in ALLOWED_USER_IDS
             ):
@@ -36,63 +44,22 @@ class Roles(commands.Cog):
                     return
 
                 member = await message.guild.fetch_member(discord_id)
+
                 if status == "not_referred":
-                    roles = [role for role in member.roles if role.name != "@everyone"]
-
-                    if roles:
-                        print(
-                            f"Roles for {member.display_name}: {', '.join(role.name for role in roles)} is changed"
-                        )
-                        await member.remove_roles(*roles)
-
-                    role = discord.utils.get(
-                        message.guild.roles, id=1386050010948309113
+                    await update_member_status(
+                        member, name, role_id=temp_member_id, guild=message.guild
                     )
-
-                    if role:
-                        await member.add_roles(role)
-                    try:
-                        await member.edit(nick=name)
-                        await member.send(f"✅ Nickname updated as {name} in server")
-                    except:  # noqa: E722
-                        print("❌ Failed to set nickname")
+                    await name_assign(member, name)
 
                 elif status == "active":
-                    roles = [role for role in member.roles if role.name != "@everyone"]
-
-                    if roles:
-                        print(
-                            f"Roles for {member.display_name}: {', '.join(role.name for role in roles)}is changed"
-                        )
-                        await member.remove_roles(*roles)
-                    role = discord.utils.get(
-                        message.guild.roles, id=1386299830762078309
+                    await update_member_status(
+                        member, name, role_id=member_id, guild=message.guild
                     )
-
-                    if role:
-                        await member.add_roles(role)
-                    try:
-                        await member.edit(nick=name)
-                        await member.send(f"✅ Nickname updated as {name} in server")
-                    except:  # noqa: E722
-                        print("❌ Failed to set nickname")
+                    await name_assign(member, name)
 
                 elif status == "pending":
-                    roles = [role for role in member.roles if role.name != "@everyone"]
-
-                    if roles:
-                        print(
-                            f"Roles for {member.display_name}: {', '.join(role.name for role in roles)}is changed "
-                        )
-                        await member.remove_roles(*roles)
-                    try:
-                        await member.edit(nick=name)
-                        await member.send(f"✅ Nickname updated as {name} in server")
-                    except:  # noqa: E722
-                        print("❌ Failed to set nickname")
-
-                else:
-                    print("")
+                    await update_member_status(member, name)
+                    await name_assign(member, name)
 
 
 async def setup(bot):
