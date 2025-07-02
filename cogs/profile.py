@@ -9,6 +9,7 @@ class Profile(commands.Cog):
 
     @app_commands.command(name="profile", description="To get profile info")
     async def profile(self, interaction: discord.Interaction):
+        print("hey")
         await interaction.response.send_message(
             "Wait until you receive a dm from Rose", ephemeral=True
         )
